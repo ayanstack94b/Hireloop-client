@@ -1,2 +1,20 @@
 @import "tailwindcss";
 @import "@heroui/styles"; 
+
+:root {
+  --font-heading: var(--font-outfit);
+  --font-body: var(--font-geist-sans);
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
