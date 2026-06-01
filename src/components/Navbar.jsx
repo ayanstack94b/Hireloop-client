@@ -26,34 +26,40 @@ export default function Navbar() {
                         Hire<span className="text-fuchsia-500">Verse</span>
                     </Link>
 
-                    {/* Desktop Menu */}
-                    <div className="hidden lg:flex items-center gap-10">
-                        {navLinks.map((link) => (
+                    {/* Desktop Right Side */}
+                    <div className="hidden lg:flex items-center ml-auto">
+                        {/* Navigation Links */}
+                        <div className="flex items-center gap-10">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    className="text-sm font-medium text-gray-300 hover:text-fuchsia-400 transition duration-300"
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+
+                        {/* Vertical Divider */}
+                        <div className="mx-8 h-6 w-px bg-white/15" />
+
+                        {/* Auth Buttons */}
+                        <div className="flex items-center gap-4">
                             <Link
-                                key={link.name}
-                                href={link.href}
-                                className="text-sm font-medium text-gray-300 hover:text-fuchsia-400 transition duration-300"
+                                href="/signin"
+                                className="text-sm font-medium text-fuchsia-400 hover:text-fuchsia-300 transition"
                             >
-                                {link.name}
+                                Sign In
                             </Link>
-                        ))}
-                    </div>
 
-                    {/* Desktop Buttons */}
-                    <div className="hidden lg:flex items-center gap-4">
-                        <Link
-                            href="/signin"
-                            className="text-sm font-medium text-fuchsia-400 hover:text-fuchsia-300 transition"
-                        >
-                            Sign In
-                        </Link>
-
-                        <Link
-                            href="/signup"
-                            className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-fuchsia-500 hover:text-white transition-all duration-300"
-                        >
-                            Get Started
-                        </Link>
+                            <Link
+                                href="/signup"
+                                className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-fuchsia-500 hover:text-white transition-all duration-300"
+                            >
+                                Get Started
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -67,7 +73,7 @@ export default function Navbar() {
 
                 {/* Mobile Menu */}
                 <div
-                    className={`lg:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[500px] opacity-100 mt-3" : "max-h-0 opacity-0"
+                    className={`lg:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-125 opacity-100 mt-3" : "max-h-0 opacity-0"
                         }`}
                 >
                     <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex flex-col gap-5">
