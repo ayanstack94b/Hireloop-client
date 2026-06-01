@@ -47,10 +47,16 @@ export default function Navbar() {
                         {/* Auth Buttons */}
                         <div className="flex items-center gap-4">
                             <Link
-                                href="/signin"
-                                className="text-sm font-medium text-fuchsia-400 hover:text-fuchsia-300 transition"
+                                href="/auth/signin"
+                                className="text-fuchsia-400 hover:text-fuchsia-300 transition"
                             >
                                 Sign In
+                            </Link>
+                            <Link
+                                href="/auth/signup"
+                                className="text-fuchsia-400 hover:text-fuchsia-300 transition"
+                            >
+                                Sign Up
                             </Link>
 
                             <Link
@@ -91,10 +97,16 @@ export default function Navbar() {
 
                         <div className="flex flex-col gap-3 pt-3 border-t border-white/10">
                             <Link
-                                href="/signin"
+                                href="/auth/signin"
                                 className="text-fuchsia-400 hover:text-fuchsia-300 transition"
                             >
                                 Sign In
+                            </Link>
+                            <Link
+                                href="/auth/signup"
+                                className="text-fuchsia-400 hover:text-fuchsia-300 transition"
+                            >
+                                Sign Up
                             </Link>
 
                             <Link
