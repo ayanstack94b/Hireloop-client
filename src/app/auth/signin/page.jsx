@@ -1,5 +1,6 @@
 "use client";
 
+import { signIn } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -28,17 +29,23 @@ export default function SignInPage() {
         setLoading(true);
 
         try {
-            // Better Auth sign in here
+            const { error } = await signIn.email({
+                email: formData.email,
+                password: formData.password,
+            });
 
-            console.log(formData);
+            if (error) {
+                setError(error.message);
+                return;
+            }
 
+            window.location.href = "/";
         } catch (err) {
             setError(err.message || "Invalid credentials");
         } finally {
             setLoading(false);
         }
     };
-
     return (
         <div className="min-h-screen bg-black">
 
