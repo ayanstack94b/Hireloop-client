@@ -7,6 +7,7 @@ import { signOut, useSession } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 
 const navLinks = [
     { name: "Browse Jobs", href: "/jobs" },
@@ -70,13 +71,28 @@ export default function Navbar() {
             <div className="min-w-full mx-auto">
                 <div className="backdrop-blur-xl bg-black/70 border border-white/10 rounded-2xl px-5 md:px-8 py-4 flex items-center justify-between shadow-[0_0_40px_rgba(255,0,255,0.15)]">
 
-                    {/* Logo */}
-                    <Link
-                        href="/"
-                        className="text-white text-xl md:text-2xl font-bold tracking-tight"
+                    <motion.div
+                        className="relative overflow-hidden inline-block"
                     >
-                        Hire<span className="text-fuchsia-500">Verse</span>
-                    </Link>
+                        <Link
+                            href="/"
+                            className="relative z-10 text-white text-xl md:text-2xl font-bold tracking-tight"
+                        >
+                            Hire<span className="text-fuchsia-500">Verse</span>
+                        </Link>
+
+                        <motion.div
+                            className="absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-white/50 to-transparent blur-sm"
+                            initial={{ x: -100 }}
+                            animate={{ x: 220 }}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                repeatDelay: 3,
+                                ease: "linear",
+                            }}
+                        />
+                    </motion.div>
 
                     {/* Desktop Right Side */}
                     <div className="hidden lg:flex items-center ml-auto">

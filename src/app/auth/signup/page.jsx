@@ -7,11 +7,13 @@ import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { Description, Label, Radio, RadioGroup } from "@heroui/react";
 
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [role, setRole] = useState("seeker")
     const router = useRouter();
 
 
@@ -33,7 +35,7 @@ export default function SignupPage() {
         }));
     };
 
-   
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -78,6 +80,7 @@ export default function SignupPage() {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
+                role,
                 image: formData.image,
             });
 
@@ -285,6 +288,32 @@ export default function SignupPage() {
                                     >
                                         {showConfirmPassword ? "Hide" : "Show"}
                                     </button>
+                                </div>
+
+                                {/* Role selection tab */}
+
+                                <div className="flex flex-col gap-4">
+                                    <Label>Subscription plan</Label>
+                                    <RadioGroup defaultValue="seeker" onChange={value => setRole(value)} name="plan-orientation" orientation="horizontal">
+
+                                        <Radio selected value="seeker">
+                                            <Radio.Control>
+                                                <Radio.Indicator />
+                                            </Radio.Control>
+                                            <Radio.Content>
+                                                <Label>Job seeker</Label>
+                                            </Radio.Content>
+                                        </Radio>
+                                        <Radio value="recruiter">
+                                            <Radio.Control>
+                                                <Radio.Indicator />
+                                            </Radio.Control>
+                                            <Radio.Content>
+                                                <Label>Recruiter</Label>
+                                            </Radio.Content>
+                                        </Radio>
+
+                                    </RadioGroup>
                                 </div>
 
                                 {error && (
