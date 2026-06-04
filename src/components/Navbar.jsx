@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { signOut, useSession } from "@/lib/auth-client";
+import { Button } from "@heroui/react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
     { name: "Browse Jobs", href: "/jobs" },
@@ -12,6 +16,54 @@ const navLinks = [
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const { data: session, isPending } = useSession()
+    const router = useRouter()
+    const user = session?.user
+    console.log(isPending, session, user);
+
+    const handleSignout = async () => {
+        const result = await Swal.fire({
+            title: "Sign Out?",
+            text: "You will be logged out of your account.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Sign Out",
+            cancelButtonText: "Cancel",
+            background: "#111827",
+            color: "#fff",
+            confirmButtonColor: "#c026d3",
+            cancelButtonColor: "#374151",
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            await signOut();
+
+            await Swal.fire({
+                icon: "success",
+                title: "Signed Out",
+                text: "You have been logged out successfully.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
+
+            router.push("/");
+            router.refresh();
+
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Logout Failed",
+                text: error?.message || "Please try again.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
+        }
+        router.push("/auth/signin");
+    };
 
     return (
         <nav className="w-full fixed top-0 left-0 z-50 px-4 md:px-8 lg:px-12 py-4">
@@ -46,40 +98,59 @@ export default function Navbar() {
 
                         {/* Auth Buttons */}
                         <div className="flex items-center gap-4">
-                            <Link
-                                href="/auth/signin"
-                                className="text-fuchsia-400 hover:text-fuchsia-300 transition"
-                            >
-                                Sign In
-                            </Link>
-                            <Link
-                                href="/auth/signup"
-                                className="text-fuchsia-400 hover:text-fuchsia-300 transition"
-                            >
-                                Sign Up
-                            </Link>
+                            {user ? (
+                                <>
+                                    <span className="text-white">
+                                        Hi, {user.name}
+                                    </span>
 
-                            <Link
-                                href="/signup"
-                                className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-fuchsia-500 hover:text-white transition-all duration-300"
-                            >
-                                Get Started
-                            </Link>
+                                    <Button
+                                        onClick={handleSignout}
+                                        variant="solid"
+                                        className="bg-red-600/90 hover:bg-red-600 text-white rounded-xl"
+                                    >
+                                        Sign Out
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/auth/signin"
+                                        className="text-fuchsia-400 hover:text-fuchsia-300 transition"
+                                    >
+                                        Sign In
+                                    </Link>
+
+                                    <Link
+                                        href="/auth/signup"
+                                        className="text-fuchsia-400 hover:text-fuchsia-300 transition"
+                                    >
+                                        Sign Up
+                                    </Link>
+
+                                    <Link
+                                        href="/auth/signup"
+                                        className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-fuchsia-500 hover:text-white transition-all duration-300"
+                                    >
+                                        Get Started
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
 
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="lg:hidden text-white"
+                        className="lg:hidden w-10 h-10 rounded-xl bg-fuchsia-600 text-white flex items-center justify-center hover:bg-fuchsia-500 transition"
                     >
-                        {isOpen ? <X size={28} /> : <Menu size={28} />}
+                        {isOpen ? <X size={22} /> : <Menu size={22} />}
                     </button>
                 </div>
 
                 {/* Mobile Menu */}
                 <div
-                    className={`lg:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-125 opacity-100 mt-3" : "max-h-0 opacity-0"
+                    className={`lg:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[500px] opacity-100 mt-3" : "max-h-0 opacity-0"
                         }`}
                 >
                     <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex flex-col gap-5">
@@ -88,34 +159,50 @@ export default function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="text-gray-300 hover:text-fuchsia-400 transition"
                                 onClick={() => setIsOpen(false)}
+                                className="text-gray-300 hover:text-fuchsia-400 transition"
                             >
                                 {link.name}
                             </Link>
                         ))}
 
-                        <div className="flex flex-col gap-3 pt-3 border-t border-white/10">
-                            <Link
-                                href="/auth/signin"
-                                className="text-fuchsia-400 hover:text-fuchsia-300 transition"
-                            >
-                                Sign In
-                            </Link>
-                            <Link
-                                href="/auth/signup"
-                                className="text-fuchsia-400 hover:text-fuchsia-300 transition"
-                            >
-                                Sign Up
-                            </Link>
+                        <div className="flex flex-col gap-3 pt-4 border-t border-white/10">
 
-                            <Link
-                                href="/signup"
-                                className="bg-white text-center text-black px-5 py-3 rounded-xl font-semibold hover:bg-fuchsia-500 hover:text-white transition"
-                            >
-                                Get Started
-                            </Link>
+                            {user ? (
+                                <>
+                                    <div className="text-white">
+                                        Hi, {user.name}
+                                    </div>
+
+                                    <Button
+                                        onClick={handleSignout}
+                                        className="bg-red-600 hover:bg-red-700 text-white"
+                                    >
+                                        Sign Out
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/auth/signin"
+                                        onClick={() => setIsOpen(false)}
+                                        className="text-fuchsia-400"
+                                    >
+                                        Sign In
+                                    </Link>
+
+                                    <Link
+                                        href="/auth/signup"
+                                        onClick={() => setIsOpen(false)}
+                                        className="bg-white text-center text-black px-5 py-3 rounded-xl font-semibold hover:bg-fuchsia-500 hover:text-white transition"
+                                    >
+                                        Get Started
+                                    </Link>
+                                </>
+                            )}
+
                         </div>
+
                     </div>
                 </div>
             </div>
