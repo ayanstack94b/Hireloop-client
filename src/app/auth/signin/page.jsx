@@ -3,13 +3,15 @@
 import { signIn } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 export default function SignInPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-
+    const router = useRouter();
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -35,15 +37,39 @@ export default function SignInPage() {
             });
 
             if (error) {
-                setError(error.message);
+                await Swal.fire({
+                    icon: "error",
+                    title: "Login Failed",
+                    text: error.message,
+                    background: "#111827",
+                    color: "#fff",
+                    confirmButtonColor: "#c026d3",
+                });
+
                 return;
             }
 
-            window.location.href = "/";
+            await Swal.fire({
+                icon: "success",
+                title: "Welcome Back",
+                text: "Login successful.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
+
+            router.push("/");
+            router.refresh();
+
         } catch (err) {
-            setError(err.message || "Invalid credentials");
-        } finally {
-            setLoading(false);
+            await Swal.fire({
+                icon: "error",
+                title: "Login Failed",
+                text: err.message || "Invalid credentials",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
         }
     };
     return (

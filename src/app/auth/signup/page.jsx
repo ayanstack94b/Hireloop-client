@@ -5,10 +5,15 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const router = useRouter();
+
 
     const [formData, setFormData] = useState({
         name: "",
@@ -28,33 +33,48 @@ export default function SignupPage() {
         }));
     };
 
+   
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setError("");
-        setSuccess("");
-
-        if (
-            !formData.name ||
-            !formData.email ||
-            !formData.password
-        ) {
-            setError("All required fields must be filled");
+        if (!formData.name || !formData.email || !formData.password) {
+            Swal.fire({
+                icon: "error",
+                title: "Missing Fields",
+                text: "All required fields must be filled.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
             return;
         }
 
         if (formData.password.length < 8) {
-            setError("Password must be at least 8 characters");
+            Swal.fire({
+                icon: "error",
+                title: "Weak Password",
+                text: "Password must be at least 8 characters long.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match");
+            Swal.fire({
+                icon: "error",
+                title: "Password Mismatch",
+                text: "Passwords do not match.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
             return;
         }
 
         try {
-            const { data, error } = await authClient.signUp.email({
+            const { error } = await authClient.signUp.email({
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
@@ -62,24 +82,42 @@ export default function SignupPage() {
             });
 
             if (error) {
-                setError(error.message);
+                await Swal.fire({
+                    icon: "error",
+                    title: "Registration Failed",
+                    text: error.message,
+                    background: "#111827",
+                    color: "#fff",
+                    confirmButtonColor: "#c026d3",
+                });
+
                 return;
             }
 
-            setSuccess("Account created successfully");
-
-            setFormData({
-                name: "",
-                email: "",
-                image: "",
-                password: "",
-                confirmPassword: "",
+            await Swal.fire({
+                icon: "success",
+                title: "Account Created",
+                text: "Your account has been created successfully.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
             });
 
+            router.push("/auth/signin");
+
         } catch (err) {
-            setError(err.message || "Something went wrong");
+            await Swal.fire({
+                icon: "error",
+                title: "Something Went Wrong",
+                text: err.message || "Please try again later.",
+                background: "#111827",
+                color: "#fff",
+                confirmButtonColor: "#c026d3",
+            });
         }
     };
+
+
     return (
         <div className="min-h-screen bg-black p-20">
 
