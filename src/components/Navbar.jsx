@@ -20,7 +20,7 @@ export default function Navbar() {
     const { data: session, isPending } = useSession()
     const router = useRouter()
     const user = session?.user
-    console.log(isPending, session, user);
+    // console.log(isPending, session, user);
 
     const handleSignout = async () => {
         const result = await Swal.fire({

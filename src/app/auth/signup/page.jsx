@@ -151,7 +151,7 @@ export default function SignupPage() {
                         <h1 className="mt-10 text-6xl font-bold text-white leading-tight">
                             Find the role
                             <br />
-                            that's looking
+                            thats looking
                             <br />
                             for you.
                         </h1>
