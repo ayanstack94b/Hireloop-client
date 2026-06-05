@@ -7,7 +7,7 @@ import { signOut, useSession } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 const navLinks = [
     { name: "Browse Jobs", href: "/jobs" },
@@ -67,7 +67,12 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="w-full fixed top-0 left-0 z-50 px-4 md:px-8 lg:px-12 py-4">
+        <motion.nav
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full fixed top-0 left-0 z-50 px-4 md:px-8 lg:px-12 py-4"
+        >
             <div className="min-w-full mx-auto">
                 <div className="backdrop-blur-xl bg-black/70 border border-white/10 rounded-2xl px-5 md:px-8 py-4 flex items-center justify-between shadow-[0_0_40px_rgba(255,0,255,0.15)]">
 
@@ -104,7 +109,13 @@ export default function Navbar() {
                                     href={link.href}
                                     className="text-sm font-medium text-gray-300 hover:text-fuchsia-400 transition duration-300"
                                 >
-                                    {link.name}
+                                    <motion.span
+                                        className="inline-block"
+                                        whileHover={{ y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        {link.name}
+                                    </motion.span>
                                 </Link>
                             ))}
                         </div>
@@ -120,13 +131,18 @@ export default function Navbar() {
                                         Hi, {user.name}
                                     </span>
 
-                                    <Button
-                                        onClick={handleSignout}
-                                        variant="solid"
-                                        className="bg-red-600/90 hover:bg-red-600 text-white rounded-xl"
+                                    <motion.div
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
                                     >
-                                        Sign Out
-                                    </Button>
+                                        <Button
+                                            onClick={handleSignout}
+                                            variant="solid"
+                                            className="bg-red-600/90 hover:bg-red-600 text-white rounded-xl"
+                                        >
+                                            Sign Out
+                                        </Button>
+                                    </motion.div>
                                 </>
                             ) : (
                                 <>
@@ -134,22 +150,40 @@ export default function Navbar() {
                                         href="/auth/signin"
                                         className="text-fuchsia-400 hover:text-fuchsia-300 transition"
                                     >
-                                        Sign In
+                                        <motion.span
+                                            className="inline-block"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                        >
+                                            Sign In
+                                        </motion.span>
                                     </Link>
 
                                     <Link
                                         href="/auth/signup"
                                         className="text-fuchsia-400 hover:text-fuchsia-300 transition"
                                     >
-                                        Sign Up
+                                        <motion.span
+                                            className="inline-block"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                        >
+                                            Sign Up
+                                        </motion.span>
                                     </Link>
 
-                                    <Link
-                                        href="/auth/signup"
-                                        className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-fuchsia-500 hover:text-white transition-all duration-300"
+                                    <motion.div
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        transition={{ type: "spring", stiffness: 400, damping: 15 }}
                                     >
-                                        Get Started
-                                    </Link>
+                                        <Link
+                                            href="/auth/signup"
+                                            className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-fuchsia-500 hover:text-white transition-all duration-300 block"
+                                        >
+                                            Get Started
+                                        </Link>
+                                    </motion.div>
                                 </>
                             )}
                         </div>
@@ -165,63 +199,70 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Menu */}
-                <div
-                    className={`lg:hidden overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[500px] opacity-100 mt-3" : "max-h-0 opacity-0"
-                        }`}
-                >
-                    <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex flex-col gap-5">
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="lg:hidden overflow-hidden mt-3"
+                        >
+                            <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex flex-col gap-5">
 
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                onClick={() => setIsOpen(false)}
-                                className="text-gray-300 hover:text-fuchsia-400 transition"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-
-                        <div className="flex flex-col gap-3 pt-4 border-t border-white/10">
-
-                            {user ? (
-                                <>
-                                    <div className="text-white">
-                                        Hi, {user.name}
-                                    </div>
-
-                                    <Button
-                                        onClick={handleSignout}
-                                        className="bg-red-600 hover:bg-red-700 text-white"
-                                    >
-                                        Sign Out
-                                    </Button>
-                                </>
-                            ) : (
-                                <>
+                                {navLinks.map((link) => (
                                     <Link
-                                        href="/auth/signin"
+                                        key={link.name}
+                                        href={link.href}
                                         onClick={() => setIsOpen(false)}
-                                        className="text-fuchsia-400"
+                                        className="text-gray-300 hover:text-fuchsia-400 transition"
                                     >
-                                        Sign In
+                                        {link.name}
                                     </Link>
+                                ))}
 
-                                    <Link
-                                        href="/auth/signup"
-                                        onClick={() => setIsOpen(false)}
-                                        className="bg-white text-center text-black px-5 py-3 rounded-xl font-semibold hover:bg-fuchsia-500 hover:text-white transition"
-                                    >
-                                        Get Started
-                                    </Link>
-                                </>
-                            )}
+                                <div className="flex flex-col gap-3 pt-4 border-t border-white/10">
 
-                        </div>
+                                    {user ? (
+                                        <>
+                                            <div className="text-white">
+                                                Hi, {user.name}
+                                            </div>
 
-                    </div>
-                </div>
+                                            <Button
+                                                onClick={handleSignout}
+                                                className="bg-red-600 hover:bg-red-700 text-white"
+                                            >
+                                                Sign Out
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link
+                                                href="/auth/signin"
+                                                onClick={() => setIsOpen(false)}
+                                                className="text-fuchsia-400"
+                                            >
+                                                Sign In
+                                            </Link>
+
+                                            <Link
+                                                href="/auth/signup"
+                                                onClick={() => setIsOpen(false)}
+                                                className="bg-white text-center text-black px-5 py-3 rounded-xl font-semibold hover:bg-fuchsia-500 hover:text-white transition"
+                                            >
+                                                Get Started
+                                            </Link>
+                                        </>
+                                    )}
+
+                                </div>
+
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
-        </nav>
+        </motion.nav>
     );
 }
