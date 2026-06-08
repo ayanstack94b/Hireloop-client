@@ -1,19 +1,84 @@
 "use client";
 
-import {
-    Button,
-    Input,
-    Switch,
-    Select,
-    Label,
-    ListBox,
-} from "@heroui/react";
+import { Input, Switch } from "@heroui/react";
+import { motion } from "motion/react";
+import Swal from "sweetalert2";
+import { useState } from "react";
 
 export default function NewJobPage() {
-    return (
-        <div className="max-w-5xl mx-auto flex flex-col gap-8 mb-8">
+    const [formData, setFormData] = useState({
+        title: "",
+        category: "",
+        jobType: "",
+        salaryFrom: "",
+        salaryTo: "",
+        currency: "",
+        otherCurrency: "",
+        city: "",
+        country: "",
+        remote: false,
+        deadline: "",
+        responsibilities: "",
+        requirements: "",
+        benefits: "",
+    });
 
-            {/* Header */}
+    const handleChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const requiredFields = [
+            formData.title,
+            formData.category,
+            formData.jobType,
+            formData.salaryFrom,
+            formData.salaryTo,
+            formData.currency,
+            formData.city,
+            formData.country,
+            formData.deadline,
+            formData.responsibilities,
+            formData.requirements,
+        ];
+
+        const hasEmptyField = requiredFields.some(
+            (field) => !field || field.trim() === ""
+        );
+
+        if (hasEmptyField) {
+            Swal.fire({
+                icon: "error",
+                title: "Missing Information",
+                text: "Please fill all required fields.",
+                confirmButtonColor: "#d946ef",
+            });
+            return;
+        }
+
+        Swal.fire({
+            icon: "success",
+            title: "Job Created",
+            text: "Job is ready to be published.",
+            confirmButtonColor: "#d946ef",
+        });
+
+        console.log(formData);
+    };
+
+    return (
+        <motion.form
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-5xl mx-auto flex flex-col gap-8 pb-10"
+        >
             <div>
                 <h1 className="text-3xl font-bold text-white">
                     Post a New Job
@@ -24,78 +89,60 @@ export default function NewJobPage() {
                 </p>
             </div>
 
-            {/* Job Information */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 flex flex-col gap-6">
                 <h2 className="text-xl font-semibold text-white">
                     Job Information
                 </h2>
 
                 <Input
+                    name="title"
                     label="Job Title"
                     placeholder="Senior MERN Stack Developer"
+                    value={formData.title}
+                    onChange={handleChange}
                 />
 
-                <Select className="w-full" placeholder="Select Category">
-                    <Label>Job Category</Label>
+                <div>
+                    <label className="block text-sm text-gray-400 mb-2">
+                        Job Category
+                    </label>
 
-                    <Select.Trigger>
-                        <Select.Value />
-                        <Select.Indicator />
-                    </Select.Trigger>
+                    <select
+                        name="category"
+                        value={formData.category}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-white/10 bg-black p-3 text-white"
+                    >
+                        <option value="">Select Category</option>
+                        <option value="Engineering">Engineering</option>
+                        <option value="Design">Design</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Sales">Sales</option>
+                    </select>
+                </div>
 
-                    <Select.Popover>
-                        <ListBox>
-                            <ListBox.Item id="engineering">
-                                Engineering
-                            </ListBox.Item>
+                <div>
+                    <label className="block text-sm text-gray-400 mb-2">
+                        Job Type
+                    </label>
 
-                            <ListBox.Item id="design">
-                                Design
-                            </ListBox.Item>
-
-                            <ListBox.Item id="marketing">
-                                Marketing
-                            </ListBox.Item>
-
-                            <ListBox.Item id="sales">
-                                Sales
-                            </ListBox.Item>
-                        </ListBox>
-                    </Select.Popover>
-                </Select>
-
-                <Select className="w-full" placeholder="Select Job Type">
-                    <Label>Job Type</Label>
-
-                    <Select.Trigger>
-                        <Select.Value />
-                        <Select.Indicator />
-                    </Select.Trigger>
-
-                    <Select.Popover>
-                        <ListBox>
-                            <ListBox.Item id="fulltime">
-                                Full-time
-                            </ListBox.Item>
-
-                            <ListBox.Item id="parttime">
-                                Part-time
-                            </ListBox.Item>
-
-                            <ListBox.Item id="contract">
-                                Contract
-                            </ListBox.Item>
-
-                            <ListBox.Item id="internship">
-                                Internship
-                            </ListBox.Item>
-                        </ListBox>
-                    </Select.Popover>
-                </Select>
+                    <select
+                        name="jobType"
+                        value={formData.jobType}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-white/10 bg-black p-3 text-white"
+                    >
+                        <option value="">Select Job Type</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                </div>
             </div>
 
-            {/* Salary */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 flex flex-col gap-6">
+
                 <h2 className="text-xl font-semibold text-white">
                     Compensation
                 </h2>
@@ -103,121 +150,159 @@ export default function NewJobPage() {
                 <div className="grid md:grid-cols-3 gap-4">
 
                     <Input
+                        name="salaryFrom"
                         type="number"
-                        label="Minimum Salary"
+                        label="From Salary"
                         placeholder="50000"
+                        value={formData.salaryFrom}
+                        onChange={handleChange}
                     />
 
                     <Input
+                        name="salaryTo"
                         type="number"
-                        label="Maximum Salary"
+                        label="To Salary"
                         placeholder="100000"
+                        value={formData.salaryTo}
+                        onChange={handleChange}
                     />
 
-                    <Input
-                        label="Currency"
-                        placeholder="USD / INR / EUR"
-                    />
+                    <div>
+                        <label className="block text-sm text-gray-400 mb-2">
+                            Currency
+                        </label>
+
+                        <select
+                            name="currency"
+                            value={formData.currency}
+                            onChange={handleChange}
+                            className="w-full rounded-xl border border-white/10 bg-black p-3 text-white outline-none"
+                        >
+                            <option value="">Select Currency</option>
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="INR">INR - Indian Rupee</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="CAD">CAD - Canadian Dollar</option>
+                            <option value="AUD">AUD - Australian Dollar</option>
+                            <option value="SGD">SGD - Singapore Dollar</option>
+                            <option value="JPY">JPY - Japanese Yen</option>
+                            <option value="CNY">CNY - Chinese Yuan</option>
+                            <option value="AED">AED - UAE Dirham</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
 
                 </div>
+
+                {formData.currency === "OTHER" && (
+                    <Input
+                        name="otherCurrency"
+                        label="Specify Currency"
+                        placeholder="BDT, ZAR, BRL..."
+                        value={formData.otherCurrency}
+                        onChange={handleChange}
+                    />
+                )}
+
             </div>
 
-            {/* Location */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 flex flex-col gap-6">
                 <h2 className="text-xl font-semibold text-white">
                     Location
                 </h2>
 
-                <Switch>
+                <Switch
+                    isSelected={formData.remote}
+                    onValueChange={(value) =>
+                        setFormData((prev) => ({
+                            ...prev,
+                            remote: value,
+                        }))
+                    }
+                >
                     Remote Position
                 </Switch>
 
                 <div className="grid md:grid-cols-2 gap-4">
-
                     <Input
+                        name="city"
                         label="City"
-                        placeholder="Kolkata"
+                        value={formData.city}
+                        onChange={handleChange}
                     />
 
                     <Input
+                        name="country"
                         label="Country"
-                        placeholder="India"
+                        value={formData.country}
+                        onChange={handleChange}
                     />
-
                 </div>
             </div>
 
-            {/* Deadline */}
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 flex flex-col gap-6">
-                <h2 className="text-xl font-semibold text-white">
-                    Application Deadline
-                </h2>
-
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
                 <Input
+                    name="deadline"
                     type="date"
-                    label="Deadline"
+                    label="Application Deadline"
+                    value={formData.deadline}
+                    onChange={handleChange}
                 />
             </div>
 
-            {/* Description */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 flex flex-col gap-6">
-
                 <h2 className="text-xl font-semibold text-white">
                     Job Description
                 </h2>
 
                 <textarea
-                    className="w-full min-h-40 rounded-xl border border-white/10 bg-transparent p-4 text-white outline-none"
-                
-                    label="Responsibilities"
-                    placeholder="Describe the responsibilities..."
+                    name="responsibilities"
+                    placeholder="Responsibilities"
+                    value={formData.responsibilities}
+                    onChange={handleChange}
                     rows={6}
+                    className="w-full rounded-xl border border-white/10 bg-transparent p-4 text-white"
                 />
 
                 <textarea
-                    className="w-full min-h-40 rounded-xl border border-white/10 bg-transparent p-4 text-white outline-none"
-               
-                    label="Requirements"
-                    placeholder="Describe the requirements..."
+                    name="requirements"
+                    placeholder="Requirements"
+                    value={formData.requirements}
+                    onChange={handleChange}
                     rows={6}
+                    className="w-full rounded-xl border border-white/10 bg-transparent p-4 text-white"
                 />
 
                 <textarea
-                    className="w-full min-h-40 rounded-xl border border-white/10 bg-transparent p-4 text-white outline-none"
-                
-                    label="Benefits"
-                    placeholder="Optional benefits..."
+                    name="benefits"
+                    placeholder="Benefits (Optional)"
+                    value={formData.benefits}
+                    onChange={handleChange}
                     rows={4}
+                    className="w-full rounded-xl border border-white/10 bg-transparent p-4 text-white"
                 />
-
             </div>
 
-            {/* Company */}
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 flex flex-col gap-6">
-
-                <h2 className="text-xl font-semibold text-white">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+                <h2 className="text-xl font-semibold text-white mb-4">
                     Company Information
                 </h2>
 
                 <Input
-                    label="Company"
                     value="Company Name Here"
                     readOnly
                 />
-
-                <p className="text-sm text-gray-400">
-                    Posting is allowed only if your company is approved and within its active job posting limit.
-                </p>
-
             </div>
 
-            {/* Submit */}
-            <div className="flex justify-end">
-                <Button color="secondary" size="lg">
+            <div className="flex justify-center">
+                <button
+                    type="submit"
+                    className="bg-fuchsia-500 hover:bg-fuchsia-600 transition-all duration-300 ease-in-out text-white w-full py-1 rounded-lg"
+                >
                     Publish Job
-                </Button>
+                </button>
             </div>
-
-        </div>
+        </motion.form>
     );
 }
