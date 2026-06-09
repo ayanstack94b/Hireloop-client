@@ -1,9 +1,9 @@
 'use server'
 
-const baseUrl= process.env.NEXT_PUBLIC_BETTER_AUTH_URL;
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const createJob= async(newJobData)=>{
-    const res = await fetch("http://localhost:5000/jobs", {
+    const res = await fetch(`${baseUrl}/jobs`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

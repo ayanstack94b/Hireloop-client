@@ -5,10 +5,16 @@ import { motion } from "motion/react";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { createJob } from "@/lib/actions/jobs";
+import { useRouter } from "next/navigation";
 
 
 export default function NewJobPage() {
+
+    const router = useRouter();
+
     const [loading, setLoading] = useState(false);
+
+
     const [formData, setFormData] = useState({
         title: "",
         category: "",
@@ -75,6 +81,8 @@ export default function NewJobPage() {
                     text: "Your job has been published successfully.",
                     confirmButtonColor: "#d946ef",
                 });
+
+                router.push("/dashboard/recruiter");
 
                 setFormData({
                     title: "",

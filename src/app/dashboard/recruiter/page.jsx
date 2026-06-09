@@ -2,6 +2,7 @@
 import DashboardStatCard from '@/components/Dashboard/DashboardStatCard';
 import { useSession } from '@/lib/auth-client';
 import { Briefcase, CircleCheck, Persons, Thunderbolt } from '@gravity-ui/icons';
+import { motion } from "framer-motion";
 import React from 'react';
 
 const RecruiterDashboardHomePage = () => {
@@ -47,14 +48,19 @@ const RecruiterDashboardHomePage = () => {
                 </span>
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
-                {stats.map((stat) => (
-                    <DashboardStatCard
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                {stats.map((stat, index) => (
+                    <motion.div
                         key={stat.title}
-                        title={stat.title}
-                        value={stat.value}
-                        icon={stat.icon}
-                    />
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.4,
+                            delay: index * 0.08,
+                        }}
+                    >
+                        <DashboardStatCard {...stat} />
+                    </motion.div>
                 ))}
             </div>
         </div>

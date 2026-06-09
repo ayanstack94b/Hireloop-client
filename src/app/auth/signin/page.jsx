@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 
 export default function SignInPage() {
@@ -73,12 +74,17 @@ export default function SignInPage() {
         }
     };
     return (
-        <div className="min-h-screen bg-black">
+        <div className="min-h-screen bg-black ">
 
-            <div className="flex min-h-screen">
+            <div className="flex min-h-screen max-w-7xl mx-auto">
 
                 {/* Left Panel */}
-                <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+                <motion.div
+                    initial={{ opacity: 0, x: -40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+                >
 
                     <Image
                         src="/cta-bg.png"
@@ -90,16 +96,30 @@ export default function SignInPage() {
 
                     <div className="absolute inset-0 bg-black/60" />
 
-                    <div className="relative z-10 flex flex-col justify-center px-16">
+                    <div className="relative z-10 flex flex-col justify-center px-8 xl:px-16">
 
-                        <Link
-                            href="/"
-                            className="text-4xl font-bold text-white"
-                        >
-                            Hire<span className="text-fuchsia-500">Verse</span>
-                        </Link>
+                        <motion.div className="relative overflow-hidden inline-block">
+                            <Link
+                                href="/"
+                                className="relative z-10 text-4xl font-bold text-white"
+                            >
+                                Hire<span className="text-fuchsia-500">Verse</span>
+                            </Link>
 
-                        <h1 className="mt-10 text-6xl font-bold text-white leading-tight">
+                            <motion.div
+                                className="pointer-events-none absolute top-0 bottom-0 w-8 bg-gradient-to-r from-transparent via-white/50 to-transparent blur-sm"
+                                initial={{ x: -100 }}
+                                animate={{ x: 250 }}
+                                transition={{
+                                    duration: 1.8,
+                                    repeat: Infinity,
+                                    repeatDelay: 8,
+                                    ease: "linear",
+                                }}
+                            />
+                        </motion.div>
+
+                        <h1 className="mt-10 text-4xl xl:text-6xl font-bold text-white leading-tight">
                             Welcome
                             <br />
                             back to your
@@ -112,7 +132,7 @@ export default function SignInPage() {
                             and connect with top companies.
                         </p>
 
-                        <div className="grid grid-cols-3 gap-8 mt-12">
+                        <div className="grid grid-cols-3 gap-4 xl:gap-8 mt-12">
 
                             <div>
                                 <h3 className="text-3xl font-bold text-white">
@@ -144,12 +164,17 @@ export default function SignInPage() {
                         </div>
 
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Right Panel */}
-                <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-16">
+                <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-6 md:px-8 py-24">
 
-                    <div className="w-full max-w-md">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.2 }}
+                        className="w-full max-w-md lg:max-w-lg"
+                    >
 
                         <div className="lg:hidden text-center mb-8">
                             <Link
@@ -160,7 +185,7 @@ export default function SignInPage() {
                             </Link>
                         </div>
 
-                        <div className="rounded-3xl border border-white/10 bg-white/3 backdrop-blur-xl p-8">
+                        <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 md:p-8">
 
                             <h2 className="text-3xl font-bold text-white">
                                 Sign In
@@ -255,7 +280,7 @@ export default function SignInPage() {
 
                         </div>
 
-                    </div>
+                    </motion.div>
 
                 </div>
 

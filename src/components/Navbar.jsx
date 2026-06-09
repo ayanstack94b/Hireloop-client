@@ -7,7 +7,9 @@ import { signOut, useSession } from "@/lib/auth-client";
 import { Button } from "@heroui/react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+
+
 
 const navLinks = [
     { name: "Browse Jobs", href: "/jobs" },
@@ -17,6 +19,22 @@ const navLinks = [
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+
+    const [hidden, setHidden] = useState(false);
+
+    const { scrollY } = useScroll();
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        const previous = scrollY.getPrevious();
+
+        if (!previous) return;
+
+        if (latest > previous && latest > 150) {
+            setHidden(true);
+        } else {
+            setHidden(false);
+        }
+    });
     const { data: session, isPending } = useSession()
     const router = useRouter()
     const user = session?.user
@@ -68,10 +86,15 @@ export default function Navbar() {
 
     return (
         <motion.nav
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full fixed top-0 left-0 z-50 px-4 md:px-8 lg:px-12 py-4"
+            initial={{ y: -60 }}
+            animate={{
+                y: hidden ? -140 : 0,
+            }}
+            transition={{
+                duration: 0.45,
+                ease: [0.22, 1, 0.36, 1],
+            }}
+            className="sticky top-0 z-50 px-4 md:px-8 py-4"
         >
             <div className="min-w-full mx-auto">
                 <div className="backdrop-blur-xl bg-black/70 border border-white/10 rounded-2xl px-5 md:px-8 py-4 flex items-center justify-between shadow-[0_0_40px_rgba(255,0,255,0.15)]">
@@ -107,15 +130,13 @@ export default function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-sm font-medium text-gray-300 hover:text-fuchsia-400 transition duration-300"
+                                    onClick={() => {
+                                        console.log("LINK CLICKED:", link.name);
+                                        setIsOpen(false);
+                                    }}
+                                    className="px-4 py-3 rounded-2xl text-gray-300"
                                 >
-                                    <motion.span
-                                        className="inline-block"
-                                        whileHover={{ y: -2 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        {link.name}
-                                    </motion.span>
+                                    {link.name}
                                 </Link>
                             ))}
                         </div>
@@ -202,64 +223,78 @@ export default function Navbar() {
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="lg:hidden overflow-hidden mt-3"
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.25 }}
+                            className="fixed top-24 left-4 right-4 z-[999] lg:hidden"
                         >
-                            <div className="bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex flex-col gap-5">
+                            <div className="rounded-3xl border border-white/10 bg-zinc-950/98 backdrop-blur-xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.9)]">
 
-                                {navLinks.map((link) => (
-                                    <Link
-                                        key={link.name}
-                                        href={link.href}
-                                        onClick={() => setIsOpen(false)}
-                                        className="text-gray-300 hover:text-fuchsia-400 transition"
-                                    >
-                                        {link.name}
-                                    </Link>
-                                ))}
+                                {/* Navigation */}
+                                <div className="flex flex-col gap-2">
 
-                                <div className="flex flex-col gap-3 pt-4 border-t border-white/10">
-
-                                    {user ? (
-                                        <>
-                                            <div className="text-white">
-                                                Hi, {user.name}
-                                            </div>
-
-                                            <Button
-                                                onClick={handleSignout}
-                                                className="bg-red-600 hover:bg-red-700 text-white"
-                                            >
-                                                Sign Out
-                                            </Button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Link
-                                                href="/auth/signin"
-                                                onClick={() => setIsOpen(false)}
-                                                className="text-fuchsia-400"
-                                            >
-                                                Sign In
-                                            </Link>
-
-                                            <Link
-                                                href="/auth/signup"
-                                                onClick={() => setIsOpen(false)}
-                                                className="bg-white text-center text-black px-5 py-3 rounded-xl font-semibold hover:bg-fuchsia-500 hover:text-white transition"
-                                            >
-                                                Get Started
-                                            </Link>
-                                        </>
-                                    )}
+                                    {navLinks.map((link) => (
+                                        <Link
+                                            key={link.name}
+                                            href={link.href}
+                                            onClick={() => setIsOpen(false)}
+                                            className="px-4 py-3 rounded-2xl text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-300"
+                                        >
+                                            {link.name}
+                                        </Link>
+                                    ))}
 
                                 </div>
 
+                                <div className="h-px bg-white/10 my-5" />
+
+                                {/* User Section */}
+                                {user ? (
+                                    <div className="flex flex-col gap-4">
+
+                                        <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                                            <p className="text-xs text-gray-500">
+                                                Logged in as
+                                            </p>
+
+                                            <p className="text-white font-medium mt-1 truncate">
+                                                {user.name}
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            onClick={handleSignout}
+                                            className="w-full py-3 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-medium transition-all duration-300"
+                                        >
+                                            Sign Out
+                                        </button>
+
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col gap-3">
+
+                                        <Link
+                                            href="/auth/signin"
+                                            onClick={() => setIsOpen(false)}
+                                            className="w-full text-center py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-white transition-all duration-300"
+                                        >
+                                            Sign In
+                                        </Link>
+
+                                        <Link
+                                            href="/auth/signup"
+                                            onClick={() => setIsOpen(false)}
+                                            className="w-full text-center py-3 rounded-2xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-medium transition-all duration-300"
+                                        >
+                                            Get Started
+                                        </Link>
+
+                                    </div>
+                                )}
+
                             </div>
-                        </motion.div>
+                         </motion.div>
                     )}
                 </AnimatePresence>
             </div>

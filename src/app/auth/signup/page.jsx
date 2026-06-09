@@ -122,9 +122,9 @@ export default function SignupPage() {
 
 
     return (
-        <div className="min-h-screen bg-black p-20">
+        <div className="min-h-screen bg-black px-4 sm:px-6 lg:px-12 xl:px-20">
 
-            <div className="flex min-h-screen">
+            <div className="flex min-h-screen max-w-7xl mx-auto">
 
                 {/* Left Side */}
                 <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
@@ -139,7 +139,7 @@ export default function SignupPage() {
 
                     <div className="absolute inset-0 bg-black/60" />
 
-                    <div className="relative z-10 flex flex-col justify-center px-16">
+                    <div className="relative z-10 flex flex-col justify-center px-8 xl:px-16">
 
                         <Link
                             href="/"
@@ -148,7 +148,7 @@ export default function SignupPage() {
                             Hire<span className="text-fuchsia-500">Verse</span>
                         </Link>
 
-                        <h1 className="mt-10 text-6xl font-bold text-white leading-tight">
+                        <h1 className="mt-10 text-4xl xl:text-6xl font-bold text-white leading-tight">
                             Find the role
                             <br />
                             thats looking
@@ -161,7 +161,7 @@ export default function SignupPage() {
                             building meaningful connections through HireVerse.
                         </p>
 
-                        <div className="grid grid-cols-3 gap-8 mt-12">
+                        <div className="grid grid-cols-3 gap-4 xl:gap-8 mt-12">
 
                             <div>
                                 <h3 className="text-3xl font-bold text-white">
@@ -195,9 +195,9 @@ export default function SignupPage() {
                 </div>
 
                 {/* Right Side */}
-                <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-16">
+                <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-6 md:px-8 py-16">
 
-                    <div className="w-full max-w-md">
+                    <div className="w-full max-w-md lg:max-w-lg">
 
                         {/* Mobile Logo */}
                         <div className="lg:hidden text-center mb-8">
@@ -209,7 +209,7 @@ export default function SignupPage() {
                             </Link>
                         </div>
 
-                        <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-8">
+                        <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 md:p-8">
 
                             <h2 className="text-3xl font-bold text-white">
                                 Create Account
@@ -292,9 +292,9 @@ export default function SignupPage() {
 
                                 {/* Role selection tab */}
 
-                                <div className="flex flex-col gap-4">
+                                <div className="flex flex-col sm:flex-row gap-4">
                                     <Label>Subscription plan</Label>
-                                    <RadioGroup defaultValue="seeker" onChange={value => setRole(value)} name="plan-orientation" orientation="horizontal">
+                                    <RadioGroup defaultValue="seeker" onChange={value => setRole(value)} name="plan-orientation" >
 
                                         <Radio selected value="seeker">
                                             <Radio.Control>
