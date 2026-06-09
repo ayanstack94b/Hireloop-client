@@ -4,8 +4,11 @@ import { Input, Switch } from "@heroui/react";
 import { motion } from "motion/react";
 import Swal from "sweetalert2";
 import { useState } from "react";
+import { createJob } from "@/lib/actions/jobs";
+
 
 export default function NewJobPage() {
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         title: "",
         category: "",
@@ -48,27 +51,60 @@ export default function NewJobPage() {
         ];
 
         const hasEmptyField = requiredFields.some(
-            (field) => !field || field.trim() === ""
+            (field) => !field || field.toString().trim() === ""
         );
 
         if (hasEmptyField) {
-            Swal.fire({
+            return Swal.fire({
                 icon: "error",
                 title: "Missing Information",
                 text: "Please fill all required fields.",
                 confirmButtonColor: "#d946ef",
             });
-            return;
         }
 
-        Swal.fire({
-            icon: "success",
-            title: "Job Created",
-            text: "Job is ready to be published.",
-            confirmButtonColor: "#d946ef",
-        });
+        try {
+            setLoading(true);
 
-        console.log(formData);
+            const res = await createJob(formData);
+
+            if (res?.insertedId || res?.success) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Job Created",
+                    text: "Your job has been published successfully.",
+                    confirmButtonColor: "#d946ef",
+                });
+
+                setFormData({
+                    title: "",
+                    category: "",
+                    jobType: "",
+                    salaryFrom: "",
+                    salaryTo: "",
+                    currency: "",
+                    otherCurrency: "",
+                    city: "",
+                    country: "",
+                    remote: false,
+                    deadline: "",
+                    responsibilities: "",
+                    requirements: "",
+                    benefits: "",
+                });
+            } else {
+                throw new Error("Failed to create job");
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: error.message || "Something went wrong.",
+                confirmButtonColor: "#d946ef",
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -298,9 +334,10 @@ export default function NewJobPage() {
             <div className="flex justify-center">
                 <button
                     type="submit"
-                    className="bg-fuchsia-500 hover:bg-fuchsia-600 transition-all duration-300 ease-in-out text-white w-full py-1 rounded-lg"
+                    disabled={loading}
+                    className="bg-fuchsia-500 hover:bg-fuchsia-600 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-medium"
                 >
-                    Publish Job
+                    {loading ? "Publishing..." : "Publish Job"}
                 </button>
             </div>
         </motion.form>
